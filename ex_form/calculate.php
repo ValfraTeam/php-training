@@ -3,26 +3,40 @@
 
 function calculate($edad){
 	$result="";
-	
+	$error="";
 
 	if (empty($edad)){
-		$result= 'Error, you must enter value';
+		$error= 'Error, you must enter value';
 	}else{
 		if (is_numeric($edad)){
 			if($edad>='18' && $edad<='65'){
-				echo 'es un adulto de: ',+$edad,' anios';
+				$result = 'es un adulto de: '.$edad;
 			}else{
 				if ($edad>'65'){
-					echo ' es jubilado de ',+$edad,' anios';
+					$result = ' es jubilado de '.$edad;
 				}else{
-					echo ' es joven',+$edad,' anios';
+					$result = ' es joven de ' .$edad;
 				}
 
 			}
+		}else{
+			$error='error, you must enter numeric value';
 		}
 	}
-
-		return $result;
+	$response = array();
+	
+	if ($error == null){
+			$response = array(
+			"status" => true, 
+			"data" => $result
+			);
+	}else{
+		$response = array(
+			"status" => false,
+			"data" => $error);
+	}
+	
+	return $response;
 }
 		
 
@@ -38,8 +52,27 @@ if ($_SERVER["REQUEST_METHOD"] == "GET"){
 	}
 
 	$res=calculate($value);
-	echo $res;
-
-
-
+	
 ?>
+<!DOCTYPE html>
+<html>
+<head>
+	<title> </title>
+</head>
+<body>
+<div>
+<select>
+	<?php for ($i=1; $i<=10; $i++){
+		echo "<option> $i </option>";
+	}?>
+</select>
+	<?php if ($res["status"]) {?>
+	Exito: <b><?php echo $res["data"]; ?> </b>
+	<?php }else{ ?>
+	Error: <b style="color: red;">
+	 <?php echo $res["data"]; ?> </b>
+
+	<?php } ?>
+</div>
+</body>
+</html>
